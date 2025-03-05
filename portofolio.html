@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfan Portofolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .time {
+            background: #222;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            position: fixed;
+            bottom: 200px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-buttons button {
+            background: #222;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background: #444;
+        }
+
+        /* Section Spacing */
+        #home, #about, #projects, #contact {
+            scroll-margin-top: 80px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+        }
+
+        /* Header Animation */
+        .header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* About Section */
+        .about, .projects, .contact {
+            padding: 4rem 0;
+        }
+
+        .about-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Skills Section */
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Projects Section */
+        .projects {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .projects-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            transition: 0.4s ease;
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: 0.4s ease;
+        }
+
+        .project-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .gauss-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, #00ff88, #00b4d8);
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gauss-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                height: auto;
+                padding: 4rem 0;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #00ff88;
+        }
+
+        /* Text Effects */
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ff88, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, #00ff88, #00b4d8);
+        }
+
+        /* Live Chat */
+        /* Gaya untuk chat container */
+		.chat-container {
+			max-width: 400px;
+			width: 100%;
+			background: #222;
+			border-radius: 10px;
+			padding: 10px;
+			margin: 2rem auto;
+			box-shadow: 0px 0px 10px rgba(0, 255, 136, 0.5);
+		}
+
+		/* Gaya untuk header chat */
+		.chat-header {
+			background: #00ff88;
+			color: black;
+			text-align: center;
+			font-weight: bold;
+			padding: 10px;
+			border-radius: 10px 10px 0 0;
+			font-size: 1.2rem;
+		}
+
+		/* Gaya untuk area pesan */
+		.chat-messages {
+			height: 200px;
+			overflow-y: auto;
+			padding: 10px;
+			background: #111;
+			color: white;
+			border-radius: 0 0 10px 10px;
+		}
+
+		/* Gaya untuk setiap pesan */
+		.message {
+			background: #333;
+			padding: 10px;
+			border-radius: 10px;
+			margin-bottom: 10px;
+			max-width: 80%;
+			word-wrap: break-word;
+		}
+
+		/* Gaya untuk header pesan (username dan waktu) */
+		.message-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 5px;
+		}
+
+		.message-header strong {
+			color: #00ff88;
+			font-size: 0.9rem;
+		}
+
+		.message-header .time {
+			font-size: 0.8rem;
+			color: #888;
+		}
+
+		/* Gaya untuk body pesan */
+		.message-body {
+			font-size: 0.9rem;
+			line-height: 1.4;
+			color: #ddd;
+		}
+
+		/* Gaya untuk input group */
+		.input-group {
+			display: flex;
+			flex-direction: column;
+			padding: 10px;
+			background: #111;
+			border-radius: 0 0 10px 10px;
+		}
+
+		.input-group input,
+		.input-group textarea {
+			background: #222;
+			color: white;
+			border: none;
+			padding: 8px;
+			margin-bottom: 5px;
+			border-radius: 5px;
+			font-size: 0.9rem;
+		}
+
+		.input-group textarea {
+			resize: none;
+			height: 60px;
+		}
+
+		.input-group button {
+			background: #00ff88;
+			color: black;
+			padding: 8px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 0.9rem;
+			font-weight: bold;
+		}
+
+		.input-group button:hover {
+			background: #00cc66;
+		}
+		
+		/* Gaya untuk tombol hapus */
+		.delete-button {
+			background: #ff4444;
+			color: white;
+			border: none;
+			padding: 3px 3px; /* Ukuran lebih kecil */
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 0.6rem; /* Ukuran font lebih kecil */
+			margin-top: 5px; /* Jarak dari pesan */
+			align-self: flex-start; /* Posisi di kiri */
+			transition: background 0.3s ease;
+		}
+
+		.delete-button:hover {
+			background: #cc0000;
+		}
+
+        /* Star Animation */
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        .star:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+        .star:nth-child(2) { top: 20%; left: 50%; animation-delay: 1s; }
+        .star:nth-child(3) { top: 30%; left: 80%; animation-delay: 2s; }
+        .star:nth-child(4) { top: 40%; left: 10%; animation-delay: 3s; }
+        .star:nth-child(5) { top: 50%; left: 70%; animation-delay: 4s; }
+
+        /* Footer */
+        .footer {
+            background: #111;
+            padding: 10px 20px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1000;
+            margin-top: 2rem;
+            box-sizing: border-box;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .footer a {
+            color: #00ff88;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #00b4d8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="foto.png" alt="foto" id="logoImage">
+            <span>Profil</span>
+        </div>
+        <div class="time" id="timeDisplay"></div>
+    </div>
+
+    <!-- Modal for Image -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button data-target="home">🏠</button>
+        <button data-target="about">👤</button>
+        <button data-target="projects">📂</button>
+        <button data-target="contact">📞</button>
+    </div>
+
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Header Section -->
+    <header class="header" id="home">
+        <div class="header-content">
+            <h1>ALFAN RAMADHAN</h1>
+            <p>Front-end Web Development</p>
+        </div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </header>
+
+    <!-- About Section -->
+    <div class="container" id="about">
+        <section class="about">
+            <div class="about-card">
+                <h2>Tentang Saya</h2>
+                <p>Saya adalah mahasiswa dari Universitas Maarif Hasyim Latief, saya sangat suka sekali dengan pemrograman terutama dibidang WEB dan AI, saya juga mempunyai pengalaman dalam membuat beberapa aplikasi menghitung bilangan Gaus Jordan di bidang WEB dan AI, dan saya akan terus mengembangkan skill saya sehingga mampu menjadi seorang profesional di dunia IT.</p>
+            </div>
+            <div class="about-card">
+                <h2>Keahlian</h2>
+                <div class="skills">
+                    <div class="skill-item">Web Development</div>
+                    <div class="skill-item">UI/UX Design</div>
+                    <div class="skill-item">Digital Marketing</div>
+                    <div class="skill-item">Data Analysis</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="projects" id="projects">
+            <h2>Proyek Terbaru</h2>
+            <div class="info-card">
+                <p>Ini adalah informasi tambahan tentang proyek-proyek yang telah saya kerjakan. Saya selalu berusaha untuk memberikan yang terbaik dalam setiap proyek yang saya tangani.</p>
+                <p>Berikut ini saya akan bagikan sebuah program Gauss Jordan:</p>
+                <a href="gauss_jordan.html" target="_blank" class="gauss-button">Coba Aplikasi Gauss Jordan</a>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <img src="project 1.png" alt="project 1" onclick="openProjectModal(this.src)">
+                </div>
+                <div class="project-card">
+                    <img src="project 2.png" alt="project 2" onclick="openProjectModal(this.src)">
+                </div>
+                <div class="project-card">
+                    <img src="project 3.png" alt="project 3" onclick="openProjectModal(this.src)">
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Modal -->
+        <div id="projectModal" class="modal">
+            <span class="close" onclick="closeProjectModal()">&times;</span>
+            <img class="modal-content" id="projectModalImage">
+        </div>
+
+        <!-- Live Chat Section -->
+		<div class="chat-container" id="contact">
+		<div class="chat-header">💬 Live Chat</div>
+		<div class="chat-messages" id="chatMessages"></div>
+		<div class="input-group">
+			<input type="text" id="username" placeholder="Username">
+			<textarea id="message" placeholder="Tulis pesan..."></textarea>
+			<button onclick="sendMessage()">Kirim</button>
+		</div>
+	</div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Email: alfanramadhan123@gmail.com</p>
+            <p>Instagram: <a href="https://www.instagram.com/_pan89?igsh=MWsxYWE2MnY2OGs1cg==" target="_blank">@alfanramadhan</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Logo Image Modal
+        document.getElementById('logoImage').addEventListener('click', function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'flex';
+            modalImg.src = this.src;
+        });
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Project Modal
+        function openProjectModal(imageSrc) {
+            const modal = document.getElementById('projectModal');
+            const modalImg = document.getElementById('projectModalImage');
+            modal.style.display = 'flex';
+            modalImg.src = imageSrc;
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('projectModal');
+            if (event.target === modal) {
+                closeProjectModal();
+            }
+        });
+
+        // Navigation Buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.focus();
+            document.querySelectorAll('.nav-buttons button').forEach(button => {
+                button.addEventListener('click', function() {
+                    let targetId = this.getAttribute('data-target');
+                    let targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        });
+
+        // Live Chat
+		// Fungsi untuk mengirim pesan
+		function sendMessage() {
+			let username = document.getElementById("username").value.trim();
+			let message = document.getElementById("message").value.trim();
+			let chatMessages = document.getElementById("chatMessages");
+
+			// Validasi input
+			if (username === "" || message === "") {
+				alert("Username dan pesan tidak boleh kosong!");
+				return;
+			}
+
+			// Ambil waktu saat ini
+			const now = new Date();
+			const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+			// Buat objek pesan
+			const chatData = {
+				username: username,
+				message: message,
+				time: timeString
+			};
+
+			// Simpan pesan ke localStorage
+			saveMessageToLocalStorage(chatData);
+
+			// Tampilkan pesan di chat
+			displayMessage(chatData);
+
+			// Kosongkan input pesan
+			document.getElementById("message").value = "";
+			chatMessages.scrollTop = chatMessages.scrollHeight;
+		}
+
+		// Fungsi untuk menyimpan pesan ke localStorage
+		function saveMessageToLocalStorage(chatData) {
+			let messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+			messages.push(chatData);
+			localStorage.setItem("chatMessages", JSON.stringify(messages));
+		}
+
+		// Fungsi untuk menampilkan pesan
+		function displayMessage(chatData) {
+			let chatMessages = document.getElementById("chatMessages");
+			let newMessage = document.createElement("div");
+			newMessage.classList.add("message");
+
+			// Header (username dan waktu)
+			let messageHeader = document.createElement("div");
+			messageHeader.classList.add("message-header");
+			messageHeader.innerHTML = `
+				<strong>${chatData.username}</strong>
+				<span class="time">${chatData.time}</span>
+			`;
+
+			// Body (isi pesan)
+			let messageBody = document.createElement("div");
+			messageBody.classList.add("message-body");
+			messageBody.textContent = chatData.message;
+
+			// Tombol hapus
+			let deleteButton = document.createElement("button");
+			deleteButton.classList.add("delete-button");
+			deleteButton.textContent = "Hapus";
+			deleteButton.onclick = function () {
+				deleteMessage(chatData);
+			};
+
+			// Gabungkan header, body, dan tombol hapus ke dalam message
+			newMessage.appendChild(messageHeader);
+			newMessage.appendChild(messageBody);
+			newMessage.appendChild(deleteButton);
+
+			// Tambahkan pesan ke chat
+			chatMessages.appendChild(newMessage);
+			chatMessages.scrollTop = chatMessages.scrollHeight;
+		}
+
+		// Fungsi untuk menghapus pesan
+		function deleteMessage(chatData) {
+			// Ambil pesan dari localStorage
+			let messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+
+			// Cari dan hapus pesan yang sesuai
+			messages = messages.filter(
+				(msg) =>
+					msg.username !== chatData.username ||
+					msg.message !== chatData.message ||
+					msg.time !== chatData.time
+			);
+
+			// Simpan kembali ke localStorage
+			localStorage.setItem("chatMessages", JSON.stringify(messages));
+
+			// Muat ulang pesan di chat
+			reloadChatMessages();
+		}
+
+		// Fungsi untuk memuat ulang pesan di chat
+		function reloadChatMessages() {
+			let chatMessages = document.getElementById("chatMessages");
+			chatMessages.innerHTML = ""; // Kosongkan chat
+			loadMessagesFromLocalStorage(); // Muat ulang pesan dari localStorage
+		}
+
+		// Fungsi untuk memuat pesan dari localStorage saat halaman dimuat
+		function loadMessagesFromLocalStorage() {
+			let messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+			messages.forEach(chatData => {
+				displayMessage(chatData);
+			});
+		}
+
+		// Panggil fungsi untuk memuat pesan saat halaman dimuat
+		window.addEventListener('load', loadMessagesFromLocalStorage);
+
+        // Time Display
+        function updateTime() {
+            const now = new Date();
+            const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const timeString = new Intl.DateTimeFormat('id-ID', options).format(now);
+            document.getElementById('timeDisplay').innerText = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>

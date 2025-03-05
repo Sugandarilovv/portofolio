@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminasi Gauss Jordan</title>
+    <style>
+        /* Styling untuk body */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        /* Styling untuk header */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Styling untuk main container */
+        main {
+            padding: 2rem;
+        }
+
+        /* Styling untuk grup input */
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Styling untuk input angka */
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Styling untuk tombol */
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Hover effect untuk tombol */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling tombol buat matriks */
+        #generate-matrix {
+            margin-top: 20px;
+        }
+
+        /* Styling untuk container input matriks */
+        .matrix-input {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Default 4 kolom */
+            gap: 10px;
+            max-width: 400px;
+            margin-top: 20px;
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        /* Styling untuk output */
+        .output {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Judul aplikasi -->
+        <h1>Eliminasi Gauss Jordan</h1>
+    </header>
+    <main>
+        <section>
+            <!-- Form untuk input baris -->
+            <h2>Input Matriks</h2>
+            <div class="form-group">
+                <label for="rows">Jumlah Baris:</label>
+                <input type="number" id="rows" placeholder="Masukkan jumlah baris" min="1">
+            </div>
+            <!-- Tombol untuk generate matriks -->
+            <button id="generate-matrix">Buat</button>
+            <!-- Container untuk input matriks -->
+            <div id="matrix-container" class="matrix-input"></div>
+            <!-- Tombol proses dan kosongkan -->
+            <button id="solve-button" style="display:none;">Proses Eliminasi</button>
+            <button id="clear-button" style="display:none;">Kosongkan</button>
+        </section>
+        <!-- Bagian untuk output -->
+        <section id="output-section" class="output" style="display:none;">
+            <h2>Hasil Eliminasi Gauss</h2>
+            <div id="output"></div>
+        </section>
+    </main>
+    <script>
+        // Ambil elemen DOM
+        const rowsInput = document.getElementById('rows');
+        const generateMatrixButton = document.getElementById('generate-matrix');
+        const solveButton = document.getElementById('solve-button');
+        const clearButton = document.getElementById('clear-button');
+        const matrixContainer = document.getElementById('matrix-container');
+        const outputSection = document.getElementById('output-section');
+        const outputDiv = document.getElementById('output');
+
+        let rows = 0; // Variabel untuk menyimpan jumlah baris
+        const cols = 4; // Tetapkan jumlah kolom menjadi 4
+
+        // Event listener untuk tombol generate matriks
+        generateMatrixButton.addEventListener('click', () => {
+            rows = parseInt(rowsInput.value); // Ambil jumlah baris
+
+            // Validasi input
+            if (!rows || rows < 1) {
+                alert('Masukkan jumlah baris yang valid.');
+                return;
+            }
+
+            // Bersihkan input matriks lama
+            matrixContainer.innerHTML = '';
+            matrixContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; // Tetapkan jumlah kolom ke 4
+
+            // Generate input matriks sesuai baris dan kolom
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const input = document.createElement('input'); // Buat elemen input
+                    input.type = 'number';
+                    input.placeholder = '0'; // Placeholder default 0
+                    input.dataset.row = i; // Set atribut data-row
+                    input.dataset.col = j; // Set atribut data-col
+                    matrixContainer.appendChild(input); // Tambahkan ke container
+                }
+            }
+
+            // Tampilkan tombol proses dan kosongkan
+            solveButton.style.display = 'inline-block';
+            clearButton.style.display = 'inline-block';
+            outputSection.style.display = 'none';
+        });
+
+        // Event listener untuk tombol solve
+        solveButton.addEventListener('click', () => {
+            const matrix = getMatrixData(); // Ambil data matriks
+            const steps = solve(matrix); // Proses eliminasi
+            outputDiv.innerHTML = steps; // Tampilkan hasil
+            outputSection.style.display = 'block'; // Tampilkan output
+        });
+
+        // Event listener untuk tombol clear
+        clearButton.addEventListener('click', () => {
+            matrixContainer.innerHTML = ''; // Kosongkan container
+            outputDiv.innerHTML = ''; // Kosongkan output
+            rowsInput.value = ''; // Reset input jumlah baris
+            solveButton.style.display = 'none'; // Sembunyikan tombol proses
+            clearButton.style.display = 'none'; // Sembunyikan tombol kosongkan
+            outputSection.style.display = 'none'; // Sembunyikan output
+        });
+
+        // Fungsi untuk mendapatkan data matriks dari input
+        function getMatrixData() {
+            const matrix = [];
+            for (let i = 0; i < rows; i++) {
+                const row = [];
+                for (let j = 0; j < cols; j++) {
+                    const input = document.querySelector(`input[data-row="${i}"][data-col="${j}"]`);
+                    row.push(parseInt(input.value) || 0); // Ambil nilai atau default 0
+                }
+                matrix.push(row);
+            }
+            return matrix;
+        }
+
+        // Fungsi untuk menyelesaikan eliminasi Gauss-Jordan
+function solve(matrix) {
+    let steps = "<h3>Langkah-Langkah:</h3>";
+    steps += "<p>Matriks Augmented Awal:</p>";
+    steps += renderMatrix(matrix); // Tampilkan matriks awal
+
+    // Iterasi eliminasi
+    for (let i = 0; i < rows; i++) {
+        if (matrix[i][i] === 0) { // Jika pivot nol
+            let swapped = false;
+            for (let k = i + 1; k < rows; k++) { // Cari baris untuk ditukar
+                if (matrix[k][i] !== 0) {
+                    [matrix[i], matrix[k]] = [matrix[k], matrix[i]]; // Tukar baris
+                    swapped = true;
+                    steps += `<p>Tukar baris ${i + 1} dengan baris ${k + 1}:</p>`;
+                    steps += renderMatrix(matrix);
+                    break;
+                }
+            }
+            if (!swapped) { // Jika tidak ada pivot yang valid
+                steps += `<p>Pivot di kolom ${i + 1} nol, tidak dapat diselesaikan.</p>`;
+                return steps;
+            }
+        }
+
+        const pivot = matrix[i][i]; // Ambil nilai pivot
+        for (let j = 0; j < cols; j++) {
+            matrix[i][j] /= pivot; // Normalisasi pivot
+        }
+        steps += `<p>Eliminasi elemen di kolom ${i + 1} pada baris ${i + 1} menggunakan -1/${Math.abs(pivot)}b${i + 1}:</p>`;
+        steps += renderMatrix(matrix);
+
+        // Eliminasi elemen lain di kolom pivot
+        for (let k = 0; k < rows; k++) {
+            if (k !== i) {
+                const factor = matrix[k][i];
+                for (let j = 0; j < cols; j++) {
+                    matrix[k][j] -= factor * matrix[i][j]; // Kurangi elemen
+                }
+                steps += `<p>Eliminasi elemen di kolom ${i + 1} pada baris ${k + 1} menggunakan b${k + 1} - ${factor}b${i + 1}:</p>`;
+                steps += renderMatrix(matrix);
+            }
+        }
+    }
+
+    // Tampilkan hasil akhir
+    steps += "<h3>Hasil Akhir:</h3>";
+    steps += renderMatrix(matrix);
+    steps += "<h3>Solusi:</h3>";
+    const solutions = matrix.map(row => row[cols - 1]);
+    for (let i = 0; i < solutions.length; i++) {
+        steps += `<p>x${i + 1} = ${solutions[i]}</p>`;
+    }
+    return steps;
+}
+
+
+        // Fungsi untuk menampilkan matriks dalam format tabel
+        function renderMatrix(matrix) {
+            let html = "<table border='1' style='border-collapse: collapse; text-align: center;'>";
+            matrix.forEach(row => {
+                html += "<tr>";
+                row.forEach(value => {
+                    html += `<td>${Math.round(value)}</td>`; // Tampilkan nilai
+                });
+                html += "</tr>";
+            });
+            html += "</table>";
+            return html;
+        }
+    </script>
+</body>
+</html>
